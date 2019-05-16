@@ -6,6 +6,8 @@ typedef struct _strBank* StrBank;
 
 StrBank newStrBank(int size);
 
+int getSBSize(StrBank b);
+
 void  addStr(StrBank bank, char *str);
 char* getStr(StrBank bank, char *str);
 void  delStr(StrBank bank, char *str);

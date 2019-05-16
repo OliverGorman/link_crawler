@@ -1,5 +1,4 @@
 #include "WebGraph.h"
-#include "StrBank.h"
 #include "StrHT.h"
 #include "IntList.h"
 #include "boolean.h"
@@ -9,8 +8,7 @@
 
 typedef struct _page {
 
-    char *domain;   // points to a string in domains StrBank
-    char *dir;      // is independently malloced
+    char *url;      // points to a string in StrHT "urls"
     IntList outlinks;   // reference indices in webGraph's pages[] array
     
 }page;
@@ -21,8 +19,7 @@ typedef struct _webGraph {
     int nLinks;
     page *pages;
 
-    StrBank domains;    // contains pointers to malloced strings
-    StrHT pageIndices;  // contains indices to pages[] corresponding to URLs
+    StrHT urls;  // contains indices to pages[] corresponding to URLs
 
 }webGraph;
 
@@ -34,10 +31,9 @@ WebGraph newGraph(int initCapacity){
 
     newWG->pages = malloc(sizeof(page)*initCapacity);
 
-    newWG->domains = newStrBank(initCapacity);
-    newWG->pageIndices = newStrHT(initCapacity);
+    newWG->urls = newStrHT(initCapacity);
 
-    if (newWG->pages == NULL || newWG->domains == NULL || newWG->pageIndices == NULL)
+    if (newWG->pages == NULL || newWG->urls == NULL)
         return NULL;
 
     return newWG;
