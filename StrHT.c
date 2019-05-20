@@ -18,8 +18,28 @@ typedef struct _strHT{
     int tSize;
 }strHT;
 
+static void bail(void *p) {
+    if (p == NULL)
+        exit(0);
+}
+
+static char *strdup(char *s) {
+    char *new;
+    new = calloc(strlen(s)+1, 1);
+    strcpy(new, s);
+    bail(new);
+    return new;
+}
+
 static int hFunc(char *str, int tSize) {
-    return 0;
+
+    unsigned long hash = 5381;
+    int c;
+
+    while ((c = *str++))
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return hash % tSize;
 }
 
 StrHT newStrHT(int size) {
@@ -46,13 +66,27 @@ void  addVal(StrHT t, char *str, int val){
     int index = hFunc(str, t->tSize);
     entry* curr = &(t->table[index]);
 
-    // crawl through LL chain to end
-    while (curr->next != NULL)
-        curr = curr->next;
-    
-    curr->str = malloc(strlen(str));
-    strcpy(curr->str, str);
-    curr->val = val;
+    if (curr->str == NULL) {
+        // empty list
+        curr->str = strdup(str);
+        curr->val = val;
+    }else{
+        while (strcmp(curr->str, str) != 0 && curr->next != NULL)
+            // crawl through LL chain to last node, checking for duplicates along the way
+            curr = curr->next;
+        if (strcmp(curr->str, str) == 0)
+            // string already in table
+            return;
+        
+        entry *new = malloc(sizeof(entry));
+        bail(new);
+        curr->next = new;
+        new->next = NULL;
+        new->str = strdup(str);
+        new->val = val;
+
+    }
+    t->nStr++;
 
 }
 int getVal(StrHT t, char *str){ 
@@ -60,18 +94,63 @@ int getVal(StrHT t, char *str){
     int index = hFunc(str, t->tSize);
     entry *curr = &(t->table[index]);
 
-    while (curr != NULL) {
-        if (strcmp(curr->str, str) != 0)
+    while (curr != NULL && curr->str != NULL) {
+        if (strcmp(curr->str, str) == 0)
             return curr->val;
         else
             curr = curr->next;
     }
+    return -1;
     
 }
 void  delVal(StrHT t, char *str){ 
 
+    int index = hFunc(str, t->tSize);
+    entry *curr = &(t->table[index]);
+    
+    if (strcmp(curr->str, str) == 0) {
+        // entry to remove is first in list
+        free(curr->str);
+        curr->str = NULL;
+
+        if (curr->next != NULL) 
+            curr->next = curr->next->next;
+        else
+            // single item list
+            curr->next = NULL;
+    }
+    entry *prev = curr;
+    curr = curr->next;
+    while (curr != NULL) {
+
+        if (strcmp(curr->str, str) == 0) {
+            prev->next = curr->next;
+            free(curr->str);
+            free(curr);
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+    t->nStr--;
 }
 
 void destroyStrHT(StrHT t){ 
 
+    for (int i = 0; i < t->tSize; i++) {
+        entry *curr = &(t->table[i]);
+
+        if (curr->str != NULL) {
+            free(curr->str);
+            curr = curr->next;
+
+            while (curr != NULL) {
+                entry *next = curr->next;
+                free(curr->str);
+                free(curr);
+                curr = next;
+            }
+        }
+    }
+    free(t->table);
+    free(t);
 }

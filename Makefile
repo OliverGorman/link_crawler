@@ -14,10 +14,14 @@ crawler.o: crawler.c
 
 WebGraph.o: WebGraph.c StrHT.o
 	$(CC) -c $(CFLAGS) WebGraph.c
-	ld -r WebGraph.o StrHT.o WebGraph.o
+	ld -r WebGraph.o StrHT.o
 
 StrHT.o: StrHT.c
 	$(CC) -c $(CFLAGS) StrHT.c
 
 clean:
+	rm *.o
+
+scrub:
+	rm crawler test_StrHT
 	rm *.o
