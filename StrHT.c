@@ -61,6 +61,22 @@ int getPop(StrHT t) {
     return t->nStr;
 }
 
+char *getStr(StrHT t, char *str) {
+
+    int index = hFunc(str, t->tSize);
+    entry* curr = &(t->table[index]);
+
+    while (curr != NULL && strcmp(str, curr->str) != 0)
+        curr = curr->next;
+
+    char *final = NULL;
+    if (curr != NULL)
+        // found the string
+        final = curr->str;
+
+    return final;    
+}
+
 void  addVal(StrHT t, char *str, int val){ 
 
     int index = hFunc(str, t->tSize);

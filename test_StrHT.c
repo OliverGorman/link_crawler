@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 #include "StrHT.h"
 
 int main(int argc, char *argv[]) {
@@ -31,6 +32,8 @@ int main(int argc, char *argv[]) {
     addVal(ht, "uytrdv", 0);
     assert(getVal(ht, "uytrdv") == 0);
     assert(getPop(ht) == 3);
+    char *s = getStr(ht, "uytrdv");
+    assert(strcmp(s, "uytrdv") == 0);
 
     destroyStrHT(ht);
     return 0;

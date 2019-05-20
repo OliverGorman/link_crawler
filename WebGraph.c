@@ -30,22 +30,25 @@ WebGraph newGraph(int initCapacity){
         return NULL;
 
     newWG->pages = malloc(sizeof(page)*initCapacity);
+    if (newWG->pages == NULL)
+        return NULL;
 
     newWG->urls = newStrHT(initCapacity);
-
-    if (newWG->pages == NULL || newWG->urls == NULL)
+    if (newWG->urls == NULL)
         return NULL;
 
     return newWG;
 }
 void destroyGraph(WebGraph g){
 
+    free(g->pages);
+    destroyStrHT(g->urls);
     free(g);
 }
 
 int numPages(WebGraph g){
 
-    return 0;
+    return g->nPages;
 }
 void addPage(WebGraph g, char *fullURL){
 
