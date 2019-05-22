@@ -116,7 +116,7 @@ int getVal(StrHT t, char *str){
         else
             curr = curr->next;
     }
-    return -1;
+    return NOT_PRESENT;
     
 }
 void  delVal(StrHT t, char *str){ 
