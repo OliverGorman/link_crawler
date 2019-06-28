@@ -5,7 +5,7 @@ ADTS=StrHT.o WebGraph.o IntList.o
 all: crawler test_StrHT test_WebGraph
 
 crawler: crawler.o $(ADTS)
-	$(CC) $(CFLAGS) -o crawler crawler.o $(ADTS)
+	$(CC) $(CFLAGS) -o crawler crawler.o $(ADTS) -lcurl
 
 crawler.o: crawler.c
 	$(CC) -c $(CFLAGS) crawler.c
@@ -26,6 +26,11 @@ test_StrHT.o: test_StrHT.c
 test_WebGraph.o: test_WebGraph.c
 	$(CC) $(CFLAGS) -c test_WebGraph.c
 
+# Helper .o files
+
+urlParse.o: urlParse.c
+	$(CC) $(CFLAGS) -c urlParse.c
+
 # ADT object files
 
 WebGraph.o: WebGraph.c
@@ -41,5 +46,5 @@ clean:
 	rm *.o
 
 scrub:
-	rm crawler test_StrHT
+	rm crawler test_StrHT test_WebGraph
 	rm *.o
